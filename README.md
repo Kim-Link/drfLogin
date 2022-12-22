@@ -3,6 +3,13 @@ DRF + jwt + 소셜로그인
 
 <br>
 
+### 0. 패키지 설치
+
+파이썬 버전은 3.10 입니다.
+
+```pip install -r requirements.txt```
+
+<br>
 
 ### 1. 초기 마이그레이션 진행
 
