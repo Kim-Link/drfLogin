@@ -21,7 +21,7 @@ DRF + jwt + 소셜로그인
 
 ### 2. superuser 생성
 
-```python mamnage.py createsuperuser```
+```python manage.py createsuperuser```
 
 <br>
 
