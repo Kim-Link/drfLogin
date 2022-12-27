@@ -5,22 +5,26 @@ from django.db import models
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFill
+
 # 헬퍼 클래스
 class UserManager(BaseUserManager):
-    def create_user(self, email, password, **kwargs):
+    def create_user(self, email, password, **extra_fields):
         if not email:
             raise ValueError('Users must have an email address')
         user = self.model(
-            email=email,
+            email=email, **extra_fields
         )
         user.set_password(password)
+
         user.save(using=self._db)
         return user
     
     def create_superuser(self, email=None, password = None, **extra_fields):
         superuser = self.create_user(
             email = email,
-            password = password
+            password = password,
         )
     
         superuser.is_staff = True
@@ -41,6 +45,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    # 이미지 필드 추가
+    profile_pic = models.ImageField(null=True, blank=True)
 
 	# 헬퍼 클래스 사용
     objects = UserManager()

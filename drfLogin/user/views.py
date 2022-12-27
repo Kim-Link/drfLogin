@@ -16,12 +16,14 @@ from json import JSONDecodeError
 from django.http import JsonResponse
 import requests
 from .models import *
+from . import serializers
 from allauth.socialaccount.models import SocialAccount
 from dj_rest_auth.registration.views import SocialLoginView
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from allauth.socialaccount.providers.google import views as google_view
 from allauth.socialaccount.providers.kakao import views as kakao_view
 
+from rest_framework.parsers import FormParser, MultiPartParser
 # 소셜로그인 변수 설정
 state = os.environ.get("STATE")
 BASE_URL = 'http://localhost:8000/'
@@ -209,6 +211,26 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class AuthAPIView(APIView):
     # 유저 정보 확인
+    @swagger_auto_schema(
+        operation_id="유저 정보 확인",
+        # manual parameter
+        manual_parameters=[
+            openapi.Parameter(
+                "email",
+                openapi.IN_QUERY,
+                type=openapi.TYPE_STRING,
+                required=True,
+                description=" 이메일 입력",
+            ),
+            openapi.Parameter(
+                "password",
+                openapi.IN_QUERY,
+                type=openapi.TYPE_STRING,
+                required=True,
+                description=" 비밀번호 입력",
+            )
+        ],
+    )
     def get(self, request):
         try:
             # access token을 decode 해서 유저 id 추출 => 유저 식별
@@ -241,7 +263,7 @@ class AuthAPIView(APIView):
 
     # 로그인
     @swagger_auto_schema(
-        operation_id="유저정보 확인",
+        operation_id="로그인",
         # manual parameter
         manual_parameters=[
             openapi.Parameter(
@@ -302,8 +324,13 @@ class AuthAPIView(APIView):
 
 
 class RegisterAPIView(APIView):
+    
+    parser_classes = (MultiPartParser,)
         # 회원가입
-
+    @swagger_auto_schema(
+        operation_id="회원가입",
+        request_body=serializers.UserSerializer,
+    )
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
