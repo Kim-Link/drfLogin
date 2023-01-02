@@ -31,9 +31,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/user/', include('user.urls')),
     path('api/user/', include('allauth.urls')),
+    path('blog/', include('blog.urls')),
 
-
-    # 스웨거 설정
 ]
 
 if settings.DEBUG:
