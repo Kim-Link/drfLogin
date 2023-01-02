@@ -22,6 +22,8 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     # 생성 앱
     'user',
+    'blog',
+    'instagram',
 
     # 추가 설치 앱
     'rest_framework',
